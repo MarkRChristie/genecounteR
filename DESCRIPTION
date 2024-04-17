@@ -1,0 +1,18 @@
+Package: genecounteR
+Title: Identifies Constiutively Expressed Genes From Large RNASeq Datasets
+Version: 1.0.0
+Authors@R: 
+    person("Mark", "Christie", , "christ99@purdue.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7285-5364"))
+Description: We introduce a simple mathematical framework that does not rely on traditional estimates of variance. Specifically, we combine estimates of the standardized within-gene variation in gene counts, the estimate of the overall magnitude of variation among genes and samples, and the log standardized mean expression of a gene into a single parameter, Ω.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports:
+	scales
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
