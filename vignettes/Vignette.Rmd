@@ -28,8 +28,8 @@ library('genecounteR')
 
 ## Load and set up built-in data set
 ```{r, eval=FALSE}
-system.file("extdata", "TestData.txt", package = "genecounteR1.3")
-gene.counts <- read.table(system.file("extdata", "TestData.txt", package = "genecounteR1.3"), sep="\t", header=T, row.names=1, check.names=F)
+system.file("extdata", "TestData.txt", package = "genecounteR")
+gene.counts <- read.table(system.file("extdata", "TestData.txt", package = "genecounteR"), sep="\t", header=T, row.names=1, check.names=F)
 colnames(gene.counts)
 
 dat <- gene.counts[, -c(1:4)]  # remove all columns except gene lengths and gene counts
