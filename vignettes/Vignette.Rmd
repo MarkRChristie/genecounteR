@@ -19,9 +19,14 @@ knitr::opts_chunk$set(
 
 We strongly recommend that users follow this vignette with the built-in data before using on their own data sets. Feel free to copy and paste the below code into a new R script when running on your own data. There are 9 steps to follow.
 
+## Install the library
+```{r, eval=FALSE}
+devtools::install_github("MarkRChristie/genecounteR")
+```
+
 ## Load the library
 
-```{r setup}
+```{r, eval=FALSE}
 library('genecounteR')
 ```
 
@@ -92,4 +97,4 @@ MatchBack(deltas, dat, ref2)
 ## Notes
 Program created by Mark Christie; contact at markchristie1500@gmail.com  
 Created in R 4.4.3  
-genecounteR: a simpleframework for identifying constituitively expressed genes in large RNA-Seq data sets
+genecounteR: a simple framework for identifying constituitively expressed genes in large RNA-Seq data sets
