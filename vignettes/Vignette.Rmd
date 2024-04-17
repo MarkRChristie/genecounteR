@@ -1,0 +1,95 @@
+---
+title: "Vignette for genecounteR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Before starting
+
+We strongly recommend that users follow this vignette with the built-in data before using on their own data sets. Feel free to copy and paste the below code into a new R script when running on your own data. There are 9 steps to follow.
+
+## Load the library
+
+```{r setup}
+library('genecounteR')
+```
+
+
+## Load and set up built-in data set
+```{r, eval=FALSE}
+system.file("extdata", "TestData.txt", package = "genecounteR1.3")
+gene.counts <- read.table(system.file("extdata", "TestData.txt", package = "genecounteR1.3"), sep="\t", header=T, row.names=1, check.names=F)
+colnames(gene.counts)
+
+dat <- gene.counts[, -c(1:4)]  # remove all columns except gene lengths and gene counts
+dat <- cbind(1:nrow(dat), dat) # add unique gene ids
+```
+
+when importing your own dataset as "dat" make sure that each row is a gene and that  
+the columns are formatted as (col1 = lengths; col2 = sample 1 counts; col2 = sample 2 counts etc.)
+run head(gene.counts) and head(dat) after running the above code to understand required data format
+
+
+## Zero Remover
+remove all genes that have all zeros for counts
+```{r, eval=FALSE}
+percent.zeros.retained <- 0.8 # percentage of samples allowed to have a count of zero; applied for each gene (row) seperately
+dat <- ZeroRemover(dat, percent.zeros.retained)
+```
+
+## Sample Standardization 
+standardize gene counts by the total number of reads per sample
+```{r, eval=FALSE}
+dat <- SampleStandardization(dat)
+```
+
+## Gene Standardization 
+standardize by residuals between gene length and total expression; linear by default
+```{r, eval=FALSE}
+dat  <- GeneStandardization(dat)
+ref2 <- dat # for Matching Back after analyses are completed 
+```
+
+## Visualize Expression
+Retain top x percent of data, where x is set with "threshold"; illustrated on plot
+```{r, eval=FALSE}
+threshold <- 0.15
+dat       <- GeneCountDistributionPlot(dat, threshold) 
+```
+
+## Rank Order Expression
+calculate rank-ordered expression within each gene
+```{r, eval=FALSE}
+deltas <- RankOrder(dat) 
+```
+
+## Boot Strap 
+calculate significance of each gene
+```{r, eval=FALSE}
+alpha  <- 0.01
+deltas <- BootStrap(dat, deltas, alpha)
+```
+
+
+## Match Back 
+match back to original data set, plot top genes, report gene IDs
+```{r, eval=FALSE}
+MatchBack(deltas, dat, ref2)
+```
+
+
+## Notes
+Program created by Mark Christie; contact at markchristie1500@gmail.com  
+Created in R 4.4.3  
+genecounteR: a simpleframework for identifying constituitively expressed genes in large RNA-Seq data sets
