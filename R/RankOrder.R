@@ -77,7 +77,7 @@ RankOrder <- function(dat) {
   }
   
   #note (OUT[, 2] * OUT[, 6]) is not useful = high theta (good) * large change in E (bad)
-  plot(log(OUT[, 2]), (OUT[, 2]/OUT[, 6])*OUT[, 8], col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "log Expression", ylab = "(E/sum.deltaE) * theta")
+  plot(log(OUT[, 2]), (OUT[, 2]/OUT[, 6])*OUT[, 8], col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "log Expression", ylab = expression(Omega))
   #plot(log(OUT[, 2]), OUT[, 6], xlab = "log Expression", ylab = "sum.deltaE")
   #plot(log(OUT[, 2]), log(OUT[, 6]), xlab = "log Expression", ylab = "log sum.deltaE")
   #plot(log(OUT[, 2]), OUT[, 8], xlab = "log Expression", ylab = "theta")

@@ -13,7 +13,7 @@ BootStrap <- function(dat, deltas, alpha) {
   # plot empirical observations of test statistic
   # plotting deltas[, 3]/deltas[, 2] will find the MOST variable genes (important for future)
   #plot(log(deltas[, 2]), (deltas[, 2]/deltas[, 6]), col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "Log Expression", ylab = "E/sum.p.deltaE")
-  plot(log(deltas[, 2]), (deltas[, 2]/deltas[, 6])*deltas[, 8], col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "log Expression", ylab = "(E/sum.deltaE) * theta")
+  #plot(log(deltas[, 2]), (deltas[, 2]/deltas[, 6])*deltas[, 8], col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "log Expression", ylab = "(E/sum.deltaE) * theta")
 
   
   
@@ -48,9 +48,9 @@ BootStrap <- function(dat, deltas, alpha) {
   }
   
   deltas <- cbind(deltas, OUT)
-  plot(deltas[, 8], deltas[, ncol(deltas)], xlab="theta", ylab="p-value")
+  #plot(deltas[, 8], deltas[, ncol(deltas)], xlab="theta", ylab="p-value")
 
-  plot(log(deltas[, 2]), (deltas[, 2]/deltas[, 6])*deltas[, 8], col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "log Expression", ylab = "(E/sum.deltaE) * theta")
+  plot(log(deltas[, 2]), (deltas[, 2]/deltas[, 6])*deltas[, 8], col = "dodgerblue", bty = "l", pch = 19, cex = 1.2, xlab = "log Expression", ylab = expression(Omega))
   sigs <- deltas[deltas[, ncol(deltas)] <= alpha,  ]
   points(log(sigs[, 2]), (sigs[, 2]/sigs[, 6])*sigs[, 8], col = "red", pch = 19, cex = 1.2)
 

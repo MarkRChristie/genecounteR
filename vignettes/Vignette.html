@@ -342,10 +342,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div id="before-starting" class="section level2">
 <h2>Before starting</h2>
-<p>We strongly recommend that users follow this vignette with the
-built-in data before using on their own data sets. Feel free to copy and
-paste the below code into a new R script when running on your own data.
-There are 9 steps to follow.</p>
+<p>We recommend that users follow this vignette with the example data
+before using on their own data sets. Feel free to copy and paste the
+below code into a new R script when running on your own data. There are
+several steps to follow which work best when followed sequentially.
+Please install the libraries ‘devtools’ (for library installation) and
+‘scales’ (for transparency on plots) before proceeding.</p>
 </div>
 <div id="install-the-library" class="section level2">
 <h2>Install the library</h2>
@@ -355,60 +357,125 @@ There are 9 steps to follow.</p>
 <h2>Load the library</h2>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&#39;genecounteR&#39;</span>)</span></code></pre></div>
 </div>
-<div id="load-and-set-up-built-in-data-set" class="section level2">
-<h2>Load and set up built-in data set</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TestData.txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;genecounteR&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>gene.counts <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TestData.txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;genecounteR&quot;</span>), <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header=</span>T, <span class="at">row.names=</span><span class="dv">1</span>, <span class="at">check.names=</span>F)</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">colnames</span>(gene.counts)</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>dat <span class="ot">&lt;-</span> gene.counts[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]  <span class="co"># remove all columns except gene lengths and gene counts</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dat), dat) <span class="co"># add unique gene ids</span></span></code></pre></div>
-<p>when importing your own dataset as “dat” make sure that each row is a
+<div id="set-working-directory" class="section level2">
+<h2>Set working directory</h2>
+<p>Because you will be working with a medium sized dataset, we suggest
+setting a working directory so you can later delete the file.</p>
+<p>You can set the working directory directly or use the R package
+‘here’. For the example we will just use the Downloads directory; in
+practice you may want to create a specific directory:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;~/Downloads/&quot;</span>) <span class="co"># use something like this for Linux and Mac operating systems</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;C:/Users/username/Downloads&quot;</span>) <span class="co"># use something like this for Windows machines, where username should be substituted with your actual user name.</span></span></code></pre></div>
+<p>or you can use the pacakge ‘here’ to create relative directories.
+Learn more <a href="https://cloud.r-project.org/web/packages/here/index.html">here</a></p>
+</div>
+<div id="load-the-test-dataset" class="section level2">
+<h2>Load the test dataset</h2>
+<p>A test dataset called “TestData.txt” with 15 samples and 120,076
+“genes” can be downloaded directly from the <a href="https://github.com/MarkRChristie/genecounteR/tree/main/inst/extdata">genecounter
+github repo</a></p>
+<p>Alternatively, you can download the file directly from Dropbox into
+your current working directory:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">&#39;https://www.dropbox.com/scl/fi/zcx4ou8wahov9wivw8hxq/TestData.txt?rlkey=jdzk0qlpixsw13y3thec1zhmr&amp;st=hcx6duqv&amp;dl=1&#39;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>              <span class="at">destfile=</span><span class="st">&quot;TestData.txt&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>              <span class="at">method=</span><span class="st">&quot;auto&quot;</span>) <span class="co"># will fail if a file named TestData.txt already exists in your working directory</span></span></code></pre></div>
+<p>Next, we load the file into R and perform some minimal formatting.
+After formatting, the first column should be a gene name or gene id, the
+second column the gene lengths, and each remaining column the gene
+counts per sample (one column per sample). Each row should be a
+gene/feature/isoform. The test dataset comes from a standard
+featurecounts pipeline.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>gene.counts <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;TestData.txt&quot;</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header=</span>T, <span class="at">row.names=</span><span class="dv">1</span>, <span class="at">check.names=</span>F)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">colnames</span>(gene.counts)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>dat <span class="ot">&lt;-</span> gene.counts[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]  <span class="co"># remove all columns except gene lengths and gene counts</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dat), dat) <span class="co"># add unique gene ids; can use rownames if you want to preserve name</span></span></code></pre></div>
+<p>When importing your own dataset as “dat” make sure that each row is a
 gene and that<br />
-the columns are formatted as (col1 = lengths; col2 = sample 1 counts;
-col2 = sample 2 counts etc.) run head(gene.counts) and head(dat) after
-running the above code to understand required data format</p>
+the columns are formatted as (col1= gene id; col2 = gene length; col3 =
+sample 1 counts; col4 = sample 2 counts etc.) Run head(gene.counts) and
+head(dat) after running the above code to understand required data
+format.</p>
 </div>
 <div id="zero-remover" class="section level2">
 <h2>Zero Remover</h2>
-<p>remove all genes that have all zeros for counts</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>percent.zeros.retained <span class="ot">&lt;-</span> <span class="fl">0.8</span> <span class="co"># percentage of samples allowed to have a count of zero; applied for each gene (row) seperately</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">ZeroRemover</span>(dat, percent.zeros.retained)</span></code></pre></div>
+<p>Remove all genes that have all zeros for counts; 2 plots created</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>percent.zeros.retained <span class="ot">&lt;-</span> <span class="fl">0.8</span> <span class="co"># percentage of samples allowed to have a count of zero; applied for each gene (row) separately</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">ZeroRemover</span>(dat, percent.zeros.retained)</span></code></pre></div>
 </div>
 <div id="sample-standardization" class="section level2">
 <h2>Sample Standardization</h2>
-<p>standardize gene counts by the total number of reads per sample</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">SampleStandardization</span>(dat)</span></code></pre></div>
+<p>Standardize gene counts by the total number of reads per sample; 1
+plot created</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">SampleStandardization</span>(dat)</span></code></pre></div>
 </div>
 <div id="gene-standardization" class="section level2">
 <h2>Gene Standardization</h2>
-<p>standardize by residuals between gene length and total expression;
-linear by default</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>dat  <span class="ot">&lt;-</span> <span class="fu">GeneStandardization</span>(dat)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>ref2 <span class="ot">&lt;-</span> dat <span class="co"># for Matching Back after analyses are completed </span></span></code></pre></div>
+<p>Standardize by residuals between gene length and total expression;
+linear by default; creates 4 plots</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>dat  <span class="ot">&lt;-</span> <span class="fu">GeneStandardization</span>(dat)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>ref2 <span class="ot">&lt;-</span> dat <span class="co"># for Matching Back after analyses are completed </span></span></code></pre></div>
+<p>Users can import their own standardized data sets (using different
+methods) at this step if so desired.</p>
 </div>
 <div id="visualize-expression" class="section level2">
 <h2>Visualize Expression</h2>
-<p>Retain top x percent of data, where x is set with “threshold”;
-illustrated on plot</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>dat       <span class="ot">&lt;-</span> <span class="fu">GeneCountDistributionPlot</span>(dat, threshold) </span></code></pre></div>
+<p>Retain top x percent of genes that equal or exceed a log mean gene
+count, where x is set with “threshold”; illustrated on the single plot
+that is generated.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> <span class="fl">0.15</span> <span class="co"># will retain top 15% of genes by log mean expression</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>dat       <span class="ot">&lt;-</span> <span class="fu">GeneCountDistributionPlot</span>(dat, threshold) </span></code></pre></div>
 </div>
 <div id="rank-order-expression" class="section level2">
 <h2>Rank Order Expression</h2>
-<p>calculate rank-ordered expression within each gene</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>deltas <span class="ot">&lt;-</span> <span class="fu">RankOrder</span>(dat) </span></code></pre></div>
+<p>Calculate rank-ordered expression within each gene; 3 plots
+generated</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>deltas <span class="ot">&lt;-</span> <span class="fu">RankOrder</span>(dat) </span></code></pre></div>
 </div>
 <div id="boot-strap" class="section level2">
 <h2>Boot Strap</h2>
-<p>calculate significance of each gene</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>alpha  <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>deltas <span class="ot">&lt;-</span> <span class="fu">BootStrap</span>(dat, deltas, alpha)</span></code></pre></div>
+<p>Calculate significance of each gene; 1 plot generated, significant
+genes in red</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>alpha  <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>deltas <span class="ot">&lt;-</span> <span class="fu">BootStrap</span>(dat, deltas, alpha)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>deltas[, <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>, <span class="fu">ncol</span>(deltas))] <span class="co"># visual results</span></span></code></pre></div>
 </div>
 <div id="match-back" class="section level2">
 <h2>Match Back</h2>
-<p>match back to original data set, plot top genes, report gene IDs</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">MatchBack</span>(deltas, dat, ref2)</span></code></pre></div>
+<p>Match back to original data set, plot top genes, report gene IDs</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">MatchBack</span>(deltas, dat, ref2)</span></code></pre></div>
+</div>
+<div id="run-all" class="section level2">
+<h2>Run All</h2>
+<p>If you would like to run all of the steps at once, you can wrap them
+into a single function called RunAll and then simply call that function.
+Generally not advised, but included below are all the R commands run
+above without many comments, which may facilitate creating code that
+works best for you!</p>
+<p>Step 1: create function</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>RunAll <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">library</span>(<span class="st">&#39;genecounteR&#39;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">setwd</span>(<span class="st">&quot;~/Downloads/&quot;</span>) </span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  gene.counts <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;TestData.txt&quot;</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header=</span>T, <span class="at">row.names=</span><span class="dv">1</span>, <span class="at">check.names=</span>F)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="fu">colnames</span>(gene.counts)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  </span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>  dat  <span class="ot">&lt;-</span> gene.counts[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]  <span class="co"># remove all columns except gene lengths and gene counts</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  dat  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dat), dat)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  percent.zeros.retained <span class="ot">&lt;-</span> <span class="fl">0.8</span> <span class="co"># percentage of samples allowed to have a count of zero; applied for each gene (row) seperately</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  dat  <span class="ot">&lt;-</span> <span class="fu">ZeroRemover</span>(dat, percent.zeros.retained)</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  dat  <span class="ot">&lt;-</span> <span class="fu">SampleStandardization</span>(dat)</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  dat  <span class="ot">&lt;-</span> <span class="fu">GeneStandardization</span>(dat)</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  ref2 <span class="ot">&lt;-</span> dat <span class="co"># for Matching Back after analyses are completed </span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  threshold <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  dat    <span class="ot">&lt;-</span> <span class="fu">GeneCountDistributionPlot</span>(dat, threshold) </span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  deltas <span class="ot">&lt;-</span> <span class="fu">RankOrder</span>(dat) </span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>  alpha  <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a>  deltas <span class="ot">&lt;-</span> <span class="fu">BootStrap</span>(dat, deltas, alpha)</span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>  deltas[, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>, <span class="fu">ncol</span>(deltas))] <span class="co"># see results table</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>  <span class="fu">MatchBack</span>(deltas, dat, ref2)</span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>}</span></code></pre></div>
+<p>Step 2: run function</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">RunAll</span>()</span></code></pre></div>
 </div>
 <div id="notes" class="section level2">
 <h2>Notes</h2>
