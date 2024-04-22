@@ -158,7 +158,7 @@ Step 2: run function
     RunAll()
 
 ## Notes
-**Program created by Mark Christie; contact at <markchristie1500@gmail.com>  
+**Program created by Mark Christie;
 Created in R 4.4.3  
 genecounteR: a simple framework for identifying constituitively expressed genes in large RNA-Seq data sets**
 
