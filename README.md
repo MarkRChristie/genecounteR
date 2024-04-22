@@ -1,4 +1,5 @@
-Please visit this link for a vignetted: http://htmlpreview.github.io/?https://github.com/MarkRChristie/genecounteR/blob/main/vignettes/Vignette.html
+Please visit this link for a vignette:
+http://htmlpreview.github.io/?https://github.com/MarkRChristie/genecounteR/blob/main/vignettes/Vignette.html
 The vignette can also be found in the vignettes directory and is pasted below for convinience.
 
 ## Before starting
