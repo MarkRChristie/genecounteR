@@ -1,6 +1,8 @@
+Please visit this link for a vignetted: http://htmlpreview.github.io/?https://github.com/MarkRChristie/genecounteR/blob/main/vignettes/Vignette.html
+The vignette can also be found in the vignettes directory and is pasted below for convinience.
+
 ## Before starting
 
-<<<<<<< HEAD
 We recommend that users follow this vignette with the example data
 before using on their own data sets. Feel free to copy and paste the
 below code into a new R script when running on your own data. There are
@@ -156,15 +158,9 @@ Step 2: run function
     RunAll()
 
 ## Notes
-
-Program created by Mark Christie; contact at
-<markchristie1500@gmail.com>  
+**Program created by Mark Christie; contact at <markchristie1500@gmail.com>  
 Created in R 4.4.3  
-genecounteR: a simple framework for identifying constituitively
-expressed genes in large RNA-Seq data sets
-=======
-Please visit this link for a [vignette] (http://htmlpreview.github.io/?https://github.com/MarkRChristie/genecounteR/blob/main/vignettes/Vignette.html)
+genecounteR: a simple framework for identifying constituitively expressed genes in large RNA-Seq data sets**
 
-It is suggested to work through the vignette to understand how to use the pacakage
-Data is included!
->>>>>>> 56d7e13d6b343b0b78dcad30d073bfa1e4621c0c
+
+
